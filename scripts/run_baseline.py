@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import sys
+from typing import Any
 
 # Ensure project root and src/ are on sys.path for direct CLI execution
 _ROOT = Path(__file__).resolve().parents[1]
@@ -35,7 +36,7 @@ def run_baseline(
     round_summaries = []
 
     for r in range(1, n_rounds + 1):
-        round_info = {"round": r}
+        round_info: dict[str, Any] = {"round": r}
         if mode in ("scanner", "both"):
             scanner_res = run_baseline_scanner(target, ports=ports)
             round_info["scanner"] = scanner_res

@@ -23,7 +23,9 @@ class OllamaClient:
         if self._client is not None:
             try:
                 response = self._client.generate(model=model, prompt=prompt, **kwargs)
-                return response["response"]
+                if isinstance(response, dict):
+                    return response["response"]
+                return getattr(response, "response", str(response))
             except Exception:
                 return f"Generated response for {model}"
 
@@ -36,16 +38,19 @@ class OllamaClient:
             headers={"Content-Type": "application/json"},
         )
         try:
-            with urllib.request.urlopen(req, timeout=3.0) as resp:
+            with urllib.request.urlopen(req, timeout=120.0) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 return data.get("response", "")
-        except Exception:
-            return f"Generated response for {model}"
+        except Exception as e:
+            raise RuntimeError(f"Ollama generation failed: {e}")
 
     def chat(self, model: str, messages: list[dict], **kwargs: Any) -> dict:
         if self._client is not None:
             try:
-                return self._client.chat(model=model, messages=messages, **kwargs)
+                response = self._client.chat(model=model, messages=messages, **kwargs)
+                if isinstance(response, dict):
+                    return response
+                return {"message": {"content": getattr(response.message, "content", "")}}
             except Exception:
                 return {"message": {"content": "ok"}}
 

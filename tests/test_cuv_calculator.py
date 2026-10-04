@@ -7,7 +7,7 @@ def test_compute_cuv_returns_positive_float():
     technique = AttackTechnique(
         technique_id="T1558", name="Kerberoasting", tactic="credential-access"
     )
-    score = compute_cuv("roast a kerberos ticket on dc01", technique, "mistral:7b")
+    score = compute_cuv("roast a kerberos ticket on dc01", technique, "qwen2.5:0.5b")
     assert isinstance(score, float)
     assert score > 0
 

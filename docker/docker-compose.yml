@@ -22,17 +22,11 @@ services:
     depends_on:
       - sandbox
 
-  vuln-web-sqli:
-    image: adapt/vuln-web-sqli:latest
-    container_name: vuln-web-sqli
+  dvwa:
+    image: vulnerables/web-dvwa
+    container_name: dvwa
     ports:
-      - "8080:8080"
-
-  vuln-web-cmdi:
-    image: adapt/vuln-web-cmdi:latest
-    container_name: vuln-web-cmdi
-    ports:
-      - "8081:8081"
+      - "8082:80"
 
 volumes:
   ollama_data:

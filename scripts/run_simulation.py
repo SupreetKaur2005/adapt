@@ -32,10 +32,50 @@ def run_simulation(
             verification_criteria=["remediation_verified"],
         ),
     )
-    print(f"Starting A.D.A.P.T. simulation for {n_rounds} rounds...")
+    print(f"Starting A.D.A.P.T. simulation for up to {n_rounds} rounds...")
     orch = Orchestrator(contract=contract, model_client=model_client)
     state = orch.run_episode(n_rounds=n_rounds)
-    print(f"Simulation completed {state.round_number} rounds. Verdicts: {state.verdicts}")
+    
+    print(f"\nSimulation completed {state.round_number} rounds. Verdicts: {state.verdicts}")
+    
+    passes = state.verdicts.count('PASS')
+    blocks = state.verdicts.count('BLOCK')
+    pivots = state.verdicts.count('PIVOT')
+    
+    report_lines = []
+    report_lines.append("# A.D.A.P.T. Detailed End-of-Episode Report\n")
+    report_lines.append("## High-Level Stats")
+    report_lines.append(f"- **Total Rounds Executed:** {state.round_number} (out of {n_rounds} max)")
+    report_lines.append(f"- **Successful Exploits (PASS):** {passes}")
+    report_lines.append(f"- **Blocked/Patched (BLOCK):** {blocks}")
+    report_lines.append(f"- **Attack Pivots (PIVOT):** {pivots}\n")
+    
+    report_lines.append("## Round-by-Round Breakdown\n")
+    for record in state.history:
+        r = record.get('round', '?')
+        v = record.get('verdict', 'UNKNOWN')
+        report_lines.append(f"### Round {r} -> {v}")
+        
+        red = record.get('red_outcome', {})
+        if red.get('success'):
+            report_lines.append("- 🔴 **Red Team Action:** Generated successful exploit payload.")
+        elif red.get('contract_violation'):
+            report_lines.append(f"- 🔴 **Red Team Blocked:** {red.get('reason')}")
+            
+        blue = record.get('blue_outcome', {})
+        if blue:
+            patch = blue.get('patch', {})
+            if patch.get('file_path'):
+                report_lines.append(f"- 🔵 **Blue Team Defense:** Synthesized patch for `{patch.get('file_path')}`")
+            if blue.get('yara'):
+                report_lines.append("- 🔵 **Blue Team Defense:** Deployed YARA detection rule.")
+                
+        report_lines.append(f"- ⚖️ **Triage Reason:** {record.get('reason', 'N/A')}\n")
+    
+    report_path = Path("simulation_report.md")
+    report_path.write_text("\n".join(report_lines), encoding="utf-8")
+    print(f"\n[+] Detailed report saved to {report_path.absolute()}")
+    
     return 0
 
 

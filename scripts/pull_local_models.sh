@@ -3,8 +3,7 @@
 set -euo pipefail
 
 MODELS=(
-    "mistral:7b"
-    "llama3.3"
+    "qwen2.5:0.5b"
     "qwen3.5"
     "gemma2:27b"
     "nomic-embed-text"

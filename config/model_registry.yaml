@@ -1,7 +1,7 @@
 # Local-only routing tiers. model_router.py reads this at startup.
 tiers:
   lightweight:
-    models: ["mistral:7b", "llama3.3"]
+    models: ["qwen2.5:0.5b"]
     cost_per_token: 0.0001
     context_window: 8192
 

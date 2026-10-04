@@ -45,7 +45,7 @@ class TestPullLocalModelsScript:
         assert models_block is not None, "MODELS array not found in pull_local_models.sh"
 
         script_models = set(re.findall(r'"([^"]+)"', models_block.group(1)))
-        assert len(script_models) >= 5
+        assert len(script_models) >= 4
 
         # Check against model_registry.yaml
         with _REGISTRY_PATH.open(encoding="utf-8") as f:
@@ -59,7 +59,7 @@ class TestPullLocalModelsScript:
             expected_models.add(registry["embedding_model"]["model"])
 
         # Every local lightweight, mid, and embedding model in registry should be present
-        for model in ["mistral:7b", "llama3.3", "qwen3.5", "gemma2:27b", "nomic-embed-text"]:
+        for model in ["qwen2.5:0.5b", "qwen3.5", "gemma2:27b", "nomic-embed-text"]:
             assert model in script_models, f"Expected model {model} missing from pull_local_models.sh"
 
     def test_script_execution_with_mock_ollama(self, tmp_path: Path) -> None:
@@ -69,7 +69,7 @@ class TestPullLocalModelsScript:
 
         # Create a mock ollama executable in tmp_path that records invocations
         mock_ollama = tmp_path / "ollama"
-        mock_ollama.write_text("#!/usr/bin/env bash\necho \"MOCK_OLLAMA: $@\"\n", encoding="utf-8")
+        mock_ollama.write_bytes(b"#!/usr/bin/env bash\necho \"MOCK_OLLAMA: $@\"\n")
 
         # In Windows Git Bash, the script will execute the file if PATH starts with tmp_path
         env = os.environ.copy()
@@ -77,7 +77,7 @@ class TestPullLocalModelsScript:
 
         # Run bash script
         res = subprocess.run(
-            [bash_bin, str(_SCRIPT_PATH)],
+            [bash_bin, "scripts/pull_local_models.sh"],
             capture_output=True,
             text=True,
             cwd=str(_PROJECT_ROOT),
@@ -85,6 +85,6 @@ class TestPullLocalModelsScript:
             timeout=10,
         )
         assert res.returncode == 0, f"Script failed: stdout={res.stdout}, stderr={res.stderr}"
-        assert "Pulling mistral:7b..." in res.stdout
-        assert "MOCK_OLLAMA: pull mistral:7b" in res.stdout
+        assert "Pulling qwen2.5:0.5b..." in res.stdout
+        assert "MOCK_OLLAMA: pull qwen2.5:0.5b" in res.stdout
         assert "MOCK_OLLAMA: pull nomic-embed-text" in res.stdout

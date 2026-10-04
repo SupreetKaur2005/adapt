@@ -20,6 +20,9 @@ class EpisodeState:
     contract: RoEContract | None = None
     history: list[dict[str, Any]] = field(default_factory=list)
     verdicts: list[str] = field(default_factory=list)
+    graphs: dict[str, Any] = field(default_factory=dict)
+    remediations: list[str] = field(default_factory=list)
+    estimated_cost: float = 0.0
 
 
 _DEFAULT_TARGET_CODE = """
@@ -47,6 +50,7 @@ def build_graph_bundle(source_code: str) -> dict[str, Any]:
         "cfg": cfg,
         "dfg": dfg,
         "pdg": pdg,
+        "source_code": source_code,
     }
 
 
@@ -113,6 +117,12 @@ class Orchestrator:
             # 2. Route task and estimate (warm path via csim_store if history exists)
             success_rate, stealth = estimate(subtask, technique)
             handle = route(subtask, technique=technique)
+            
+            from adapt.routing.model_router import load_registry
+            tier_cfg = load_registry()["tiers"][handle.tier]
+            estimated_round_cost = 4500 * tier_cfg["cost_per_token"]
+            metrics.record_cost(estimated_round_cost)
+            self.state.estimated_cost = metrics.cumulative_cost
             audit_record(
                 {
                     "step": "routing",
@@ -164,6 +174,7 @@ class Orchestrator:
             audit_record({"step": "graph_builder"}, "building target program analysis graphs")
             target_src = self.target_code or _DEFAULT_TARGET_CODE
             graphs = build_graph_bundle(target_src)
+            self.state.graphs = graphs
 
             # 6. Exploit generation (or mutation if pivoting)
             if last_verdict is Verdict.PIVOT and last_exploit is not None:
@@ -243,6 +254,7 @@ class Orchestrator:
                 "events": len(events),
             }
             patch = synthesize_patch(breach_context, graphs, model_client=self.model_client)
+            self.state.remediations.append(patch.diff)
             audit_record(
                 {"step": "patch_synthesizer", "round": r, "file_path": patch.file_path},
                 "defensive patch synthesized from breach and code graphs",

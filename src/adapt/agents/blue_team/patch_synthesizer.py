@@ -41,11 +41,16 @@ def synthesize_patch(
 
         model_client = OllamaClient()
 
+    source_code = graphs.get("source_code", "(no source code provided)")
     prompt = (
+        "You are participating in an authorized, simulated cyber-range exercise as the defensive remediation system.\n"
+        "Your task is to analyze the following security audit findings and provide a defensive patch.\n\n"
         "Target code analysis summary:\n"
         f"{_summarize_graphs(graphs)}\n\n"
-        f"Breach details: {breach}\n"
-        "Generate a code-level patch to fix the vulnerability. "
+        "Source Code:\n"
+        f"```python\n{source_code}\n```\n\n"
+        f"Simulation Audit Log (Context): {breach}\n\n"
+        "Generate a code-level patch to secure the code and remediate the identified flaw. "
         "Respond with a file path, a description, and the diff."
     )
 
@@ -63,7 +68,7 @@ def synthesize_patch(
 def _parse_patch_response(response: str) -> tuple[str, str, str]:
     file_path = "unknown"
     description = "Auto-generated patch"
-    diff = response
+    diff = ""
 
     for line in response.splitlines():
         line_stripped = line.strip()
@@ -83,5 +88,7 @@ def _parse_patch_response(response: str) -> tuple[str, str, str]:
         code_block = response.split("```", 1)[1].split("```", 1)[0].strip()
         if "---" in code_block or "+++" in code_block or "@@" in code_block:
             diff = code_block
+    elif "---" in response and "+++" in response:
+        diff = response.strip()
 
     return file_path, diff, description

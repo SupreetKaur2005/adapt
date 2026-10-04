@@ -65,7 +65,7 @@ def test_red_pipeline_full_integration(mock_ollama_client, test_contract):
     assert technique.technique_id == "T1558"
 
     # 2. Compute CUV and route
-    cuv = compute_cuv(subtask, technique=technique, candidate_model="mistral:7b")
+    cuv = compute_cuv(subtask, technique=technique, candidate_model="qwen2.5:0.5b")
     assert cuv > 0
 
     handle = route(subtask, technique=technique)
