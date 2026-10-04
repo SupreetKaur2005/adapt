@@ -27,26 +27,38 @@ RED_TEAM_TOOL_SCHEMAS: list[dict] = [
     },
     {
         "name": "kerberoast",
-        "description": "Attempt a Kerberoasting attack (Event ID 4769) against an AD domain.",
+        "description": (
+            "Attempt a Kerberoasting attack (Event ID 4769) against an AD domain: requests a "
+            "service ticket for `spn` using already-obtained credentials and returns the "
+            "crackable, encrypted part of that ticket."
+        ),
         "parameters": {
             "type": "object",
             "properties": {
                 "target_host": {"type": "string"},
                 "domain": {"type": "string"},
+                "username": {"type": "string"},
+                "password": {"type": "string"},
+                "spn": {"type": "string", "description": "Target service principal name."},
             },
-            "required": ["target_host", "domain"],
+            "required": ["target_host", "domain", "username", "password", "spn"],
         },
     },
     {
         "name": "asrep_roast",
-        "description": "Attempt an AS-REP roasting attack against an AD domain.",
+        "description": (
+            "Attempt an AS-REP roasting attack against an AD domain: requests a TGT with "
+            "Kerberos pre-authentication disabled for `username` and returns the crackable, "
+            "encrypted part of the AS-REP."
+        ),
         "parameters": {
             "type": "object",
             "properties": {
                 "target_host": {"type": "string"},
                 "domain": {"type": "string"},
+                "username": {"type": "string"},
             },
-            "required": ["target_host", "domain"],
+            "required": ["target_host", "domain", "username"],
         },
     },
     {
@@ -54,8 +66,13 @@ RED_TEAM_TOOL_SCHEMAS: list[dict] = [
         "description": "Attempt RODC credential dumping against a target host.",
         "parameters": {
             "type": "object",
-            "properties": {"target_host": {"type": "string"}},
-            "required": ["target_host"],
+            "properties": {
+                "target_host": {"type": "string"},
+                "domain": {"type": "string"},
+                "username": {"type": "string"},
+                "password": {"type": "string"},
+            },
+            "required": ["target_host", "domain", "username", "password"],
         },
     },
 ]
