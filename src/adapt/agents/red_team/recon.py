@@ -34,7 +34,7 @@ class ReconResult:
 def scan(
     target_host: str,
     ports: list[int] | None = None,
-    timeout: float = 0.5,
+    timeout: float = 0.05,
 ) -> ReconResult:
     ports_to_check = ports if ports is not None else list(_SERVICE_NAMES)
 
@@ -47,6 +47,8 @@ def scan(
             if sock.connect_ex((target_host, port)) == 0:
                 open_ports.append(port)
                 services.append(_SERVICE_NAMES.get(port, f"unknown-{port}"))
+        except (OSError, socket.gaierror):
+            pass
         finally:
             sock.close()
 

@@ -50,3 +50,32 @@ def test_validate_action_delegates_to_check():
     contract = _contract()
     assert contract.validate_action({"tool": "port_scan", "target_host": "ws01"}) is True
     assert contract.validate_action({"tool": "rodc_dump", "target_host": "dc01"}) is False
+
+
+def test_blocks_prohibited_with_port_and_url():
+    contract = _contract()
+    assert not check({"tool": "port_scan", "target_host": "10.0.2.5:8080"}, contract).allowed
+    assert not check({"tool": "port_scan", "target_host": "http://10.0.2.5/endpoint"}, contract).allowed
+
+
+def test_blocks_case_insensitive_host():
+    contract = _contract()
+    assert not check({"tool": "port_scan", "target_host": "DC02"}, contract).allowed
+
+
+def test_blocks_nested_tool_args():
+    contract = _contract()
+    action = {"tool_name": "port_scan", "tool_args": {"target_host": "10.0.2.5"}}
+    result = check(action, contract)
+    assert not result.allowed
+    assert "prohibited subnet" in result.reason
+
+    banned_action = {"tool_name": "rodc_dump", "tool_args": {"target_host": "ws01"}}
+    assert not check(banned_action, contract).allowed
+
+
+def test_safe_on_empty_and_none_fields():
+    contract = _contract()
+    assert check({}, contract).allowed
+    assert check({"target_host": None, "tool": None}, contract).allowed
+    assert check({"target_host": "", "tool": ""}, contract).allowed

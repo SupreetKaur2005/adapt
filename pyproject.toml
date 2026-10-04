@@ -30,3 +30,6 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/adapt"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

@@ -1,0 +1,24 @@
+# Core Framework & Data Modeling
+pydantic>=2.0
+pyyaml>=6.0
+pandas>=2.0
+networkx>=3.0
+
+# Local Model Inference & Serving
+ollama>=0.3
+
+# Memory, Vector Store & Embeddings
+chromadb>=0.5
+
+# Threat Intelligence & Cyber Range Tooling
+stix2>=3.0
+impacket>=0.11
+mininet>=2.3
+
+# Program Analysis (AST / CFG / DFG / PDG)
+tree-sitter>=0.21
+tree-sitter-python>=0.21
+
+# Testing & Development
+pytest>=8.0
+pytest-mock>=3.14

@@ -12,15 +12,23 @@ import subprocess
 
 
 def payload_execute(target_host: str, payload: str, timeout: float = 30.0) -> dict:
-    result = subprocess.run(
-        ["docker", "exec", target_host, "sh", "-c", payload],
-        capture_output=True,
-        text=True,
-        timeout=timeout,
-    )
-    return {
-        "target_host": target_host,
-        "exit_code": result.returncode,
-        "stdout": result.stdout,
-        "stderr": result.stderr,
-    }
+    try:
+        result = subprocess.run(
+            ["docker", "exec", target_host, "sh", "-c", payload],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+        return {
+            "target_host": target_host,
+            "exit_code": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+        }
+    except Exception as e:
+        return {
+            "target_host": target_host,
+            "exit_code": -1,
+            "stdout": "",
+            "stderr": str(e),
+        }

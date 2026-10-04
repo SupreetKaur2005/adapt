@@ -44,3 +44,11 @@ def test_scan_returns_empty_when_nothing_open(monkeypatch):
 
     assert result.open_ports == []
     assert result.services == []
+
+
+def test_scan_handles_unresolvable_host_gracefully():
+    # Attempting to scan an invalid or unresolvable hostname should not raise an exception
+    result = scan("invalid-host-name-that-does-not-exist.invalid", ports=[80], timeout=0.1)
+    assert result.target_host == "invalid-host-name-that-does-not-exist.invalid"
+    assert result.open_ports == []
+    assert result.services == []
