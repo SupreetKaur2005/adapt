@@ -18,8 +18,21 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.telemetry
+    privileged: true # required for eBPF kernel probes and Sysmon-for-Linux
     depends_on:
       - sandbox
+
+  vuln-web-sqli:
+    image: adapt/vuln-web-sqli:latest
+    container_name: vuln-web-sqli
+    ports:
+      - "8080:8080"
+
+  vuln-web-cmdi:
+    image: adapt/vuln-web-cmdi:latest
+    container_name: vuln-web-cmdi
+    ports:
+      - "8081:8081"
 
 volumes:
   ollama_data:

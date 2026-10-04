@@ -32,4 +32,4 @@ dev = [
 packages = ["src/adapt"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["src", "."]

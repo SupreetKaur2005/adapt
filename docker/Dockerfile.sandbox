@@ -1,8 +1,20 @@
 FROM python:3.11-slim
 
-# TODO: install mininet, impacket system deps, openvswitch
+# Install system dependencies:
+# - Mininet & Open vSwitch for virtual network topology (mininet_topology.py)
+# - iptables & iproute2 for network boundary isolation (network_isolator.py)
+# - Impacket runtime/build prerequisites (build-essential, libffi-dev, libssl-dev)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    iproute2 iputils-ping \
+    iproute2 \
+    iputils-ping \
+    net-tools \
+    iptables \
+    mininet \
+    openvswitch-switch \
+    build-essential \
+    libffi-dev \
+    libssl-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

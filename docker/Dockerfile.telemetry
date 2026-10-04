@@ -1,6 +1,20 @@
 FROM python:3.11-slim
 
-# TODO: install Sysmon-for-Linux + eBPF toolchain (bpftool, clang)
+# Install eBPF compilation toolchain and Sysmon-for-Linux system prerequisites:
+# - clang and llvm for compiling .bpf.c probe programs
+# - bpftool and libbpf-dev for eBPF object inspection and loader support
+# - libelf-dev, procps, iproute2 for kernel tracing and process monitoring
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    clang \
+    llvm \
+    libelf-dev \
+    bpftool \
+    libbpf-dev \
+    procps \
+    iproute2 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 COPY pyproject.toml ./
 COPY src ./src
