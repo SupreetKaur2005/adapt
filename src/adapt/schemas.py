@@ -35,8 +35,14 @@ class RoEContract(BaseModel):
     revisable_strategy: RevisableStrategy
 
     def validate_action(self, action: dict[str, Any]) -> bool:
-        """The actual check every agent action passes through."""
-        raise NotImplementedError
+        """The actual check every agent action passes through.
+
+        Delegates to `adapt.contract.constraint_enforcer.check` -- imported
+        lazily here to avoid a schemas <-> contract import cycle.
+        """
+        from adapt.contract.constraint_enforcer import check
+
+        return check(action, self).allowed
 
 
 class AttackTechnique(BaseModel):
