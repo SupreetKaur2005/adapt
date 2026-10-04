@@ -22,6 +22,8 @@ dist/
 data/raw_datasets/*
 data/csim_registry/*
 data/sample_exploits/*
+data/audit/*
 !data/raw_datasets/.gitkeep
 !data/csim_registry/.gitkeep
 !data/sample_exploits/.gitkeep
+!data/audit/.gitkeep

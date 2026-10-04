@@ -9,4 +9,4 @@ from adapt.schemas import RevisableStrategy
 
 def update_strategy(objective: str, verification_criteria: list[str]) -> RevisableStrategy:
     """Draft an updated revisable tier. Caller swaps it into the active RoEContract."""
-    raise NotImplementedError
+    return RevisableStrategy(objective=objective, verification_criteria=verification_criteria)
