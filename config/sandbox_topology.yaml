@@ -1,0 +1,21 @@
+# Mininet host/link definitions + AD lab layout. Read by sandbox/mininet_topology.py.
+
+hosts:
+  - name: dc01
+    role: domain_controller
+    subnet: 10.0.0.0/24
+  - name: ws01
+    role: workstation
+    subnet: 10.0.0.0/24
+  - name: red01
+    role: attacker
+    subnet: 10.0.1.0/24
+
+links:
+  - [dc01, ws01]
+  - [red01, dc01]
+
+# Hosts the current RoE contract permits Red Team to touch.
+in_scope:
+  - dc01
+  - ws01

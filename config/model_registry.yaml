@@ -1,0 +1,20 @@
+# Local-only routing tiers. model_router.py reads this at startup.
+tiers:
+  lightweight:
+    models: ["mistral:7b", "llama3.3"]
+    cost_per_token: 0.0001
+    context_window: 8192
+
+  mid:
+    models: ["qwen3.5", "gemma2:27b"]
+    cost_per_token: 0.0005
+    context_window: 32768
+
+  heavy:
+    models: ["deepseek-v4-flash"]
+    cost_per_token: 0.0015
+    context_window: 65536
+
+embedding_model:
+  model: nomic-embed-text
+  context_window: 2048

@@ -1,0 +1,14 @@
+# Path/version of the local STIX bundle + the S_cyber skill taxonomy filter.
+
+stix_bundle_path: data/raw_datasets/mitre/enterprise-attack.json
+attack_version: "15.1"
+
+tactics:
+  - credential-access
+  - lateral-movement
+  - discovery
+
+# Keep only techniques covered by Atomic Red Team playbooks -- no need for
+# the full ~600-technique ATT&CK matrix.
+technique_filter:
+  source: atomic_red_team

@@ -1,0 +1,25 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  sandbox:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.sandbox
+    privileged: true # required for Mininet network namespaces
+    depends_on:
+      - ollama
+
+  telemetry:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.telemetry
+    depends_on:
+      - sandbox
+
+volumes:
+  ollama_data:

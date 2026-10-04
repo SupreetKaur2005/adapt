@@ -1,0 +1,14 @@
+# Shape of K_t = (I, O_t, C_t, V_t), validated by contract/roe_contract.py.
+#
+# frozen_constraints is set once at episode start and never mutated.
+# revisable_strategy can be updated by the White Team each round.
+
+frozen_constraints:
+  intent: string              # I -- why this episode exists
+  prohibited_subnets: list    # C_t -- hard network boundaries
+  max_execution_time_s: int
+  absolute_rules: list        # e.g. "never exfiltrate real credentials"
+
+revisable_strategy:
+  objective: string           # O_t -- current operational target
+  verification_criteria: list # V_t -- what counts as PASS this round

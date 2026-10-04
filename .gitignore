@@ -4,3 +4,24 @@
 *.ptx
 *.cubin
 *.fatbin
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# Local env
+.env
+
+# Data caches (regenerated via datasets/ loaders, not committed)
+data/raw_datasets/*
+data/csim_registry/*
+data/sample_exploits/*
+!data/raw_datasets/.gitkeep
+!data/csim_registry/.gitkeep
+!data/sample_exploits/.gitkeep
