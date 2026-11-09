@@ -14,15 +14,29 @@ from adapt.schemas import AttackTechnique
 # config/mitre_attack_config.yaml. When the local STIX bundle is available,
 # its records take precedence and enrich these descriptions.
 _BUILTIN: tuple[tuple[str, str, str, tuple[str, ...]], ...] = (
+    # Credential Access
     ("T1558", "Steal or Forge Kerberos Tickets", "credential-access", ("kerberos", "ticket", "kerberoast", "as-rep", "roast", "spn")),
     ("T1003", "OS Credential Dumping", "credential-access", ("credential dump", "credential extraction", "dump credentials", "lsass", "ntds", "sam database", "nt hash", "password hash")),
     ("T1110", "Brute Force", "credential-access", ("brute force", "password spray", "password guessing", "credential stuffing")),
+    ("T1555", "Credentials In Registry", "credential-access", ("registry", "credentials", "credman")),
+    ("T1557", "Credentials From Password Stores", "credential-access", ("password stores", "chrome passwords", "firefox passwords")),
+    # Lateral Movement
     ("T1021", "Remote Services", "lateral-movement", ("remote service", "smb", "winrm", "rdp", "psexec", "lateral movement", "remote execution")),
     ("T1550", "Use Alternate Authentication Material", "lateral-movement", ("pass the hash", "pass the ticket", "stolen token", "alternate authentication")),
+    ("T1021.001", "Remote Services: RDP", "lateral-movement", ("rdp", "remote desktop protocol")),
+    ("T1021.002", "Remote Services: SMB", "lateral-movement", ("smb", "server message block")),
+    # Discovery
     ("T1046", "Network Service Discovery", "discovery", ("port scan", "port scanning", "open ports", "service scan", "network service", "scan host")),
     ("T1018", "Remote System Discovery", "discovery", ("remote system", "discover hosts", "host discovery", "find computers", "network hosts")),
     ("T1087", "Account Discovery", "discovery", ("account discovery", "enumerate users", "list users", "user accounts", "domain accounts")),
     ("T1082", "System Information Discovery", "discovery", ("system information", "operating system", "os version", "system details")),
+    ("T1089", "Discovery: DNS", "discovery", ("dns", "domain name system", "dns query")),
+    # Execution
+    ("T1059", "Command-Line Interface", "execution", ("command", "cli", "cmd", "powershell", "bash")),
+    ("T1069", "Permission Groups Discovery", "discovery", ("permissions", "groups", "acl")),
+    # Impact
+    ("T1486", "Data Encrypted for Impact", "impact", ("encryption", "ransomware", "lock files")),
+    ("T1490", "Server Relay", "impact", ("proxy", "pivot", "relay")),
 )
 
 _TOKEN_RE = re.compile(r"[^a-z0-9]+")

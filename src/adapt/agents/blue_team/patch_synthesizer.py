@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 
 
 @dataclass
@@ -10,6 +10,8 @@ class Patch:
     file_path: str
     diff: str
     description: str
+    cwe_id: Optional[str] = None
+    cvss_score: Optional[float] = None
 
 
 class _ModelClient:

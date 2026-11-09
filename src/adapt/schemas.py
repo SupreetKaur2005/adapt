@@ -7,7 +7,7 @@ concrete, answerable question.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel
 
@@ -57,6 +57,8 @@ class ExploitAttempt(BaseModel):
     technique: AttackTechnique
     payload: str
     model_used: str
+    cwe_id: Optional[str] = None
+    cvss_score: Optional[float] = None
 
 
 class Verdict(str, Enum):
@@ -69,6 +71,8 @@ class TriageOutcome(BaseModel):
     verdict: Verdict
     reason: str = ""
     round_number: int
+    cwe_id: Optional[str] = None
+    cvss_score: Optional[float] = None
 
 
 class CUVScore(BaseModel):

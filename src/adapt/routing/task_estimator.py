@@ -15,6 +15,8 @@ COLD_START_TABLE: dict[str, tuple[float, float]] = {
     "credential-access": (0.5, 0.7),
     "lateral-movement": (0.4, 0.6),
     "discovery": (0.7, 0.9),
+    "execution": (0.6, 0.8),
+    "impact": (0.3, 0.4),
 }
 DEFAULT_COLD_START: tuple[float, float] = (0.3, 0.5)
 

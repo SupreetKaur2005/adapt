@@ -105,12 +105,13 @@ def run_simulation(sim_id: str, target_path: str, is_git: bool, n_rounds: int = 
                     labels[node] = label[:12] + ".." if len(label) > 14 else label
                 
                 pos = nx.spring_layout(cfg, k=2.0, seed=42)
-                nx.draw(
+                nx.draw_networkx(
                     cfg, pos, labels=labels, with_labels=True, 
                     node_color="#d90000", node_size=2500, 
                     font_color="white", font_weight="bold", font_size=9, 
                     edge_color="#555555", arrows=True, node_shape="o"
                 )
+                plt.axis("off")
                 plt.margins(0.15)
                 
                 graph_filename = f"{sim_id}_cfg.png"
@@ -124,6 +125,46 @@ def run_simulation(sim_id: str, target_path: str, is_git: bool, n_rounds: int = 
         remediations = getattr(state, "remediations", [])
         
         vulns = []
+
+# CWE/CVSS enrichment for frontend heuristic findings
+VULN_CWE_MAP = {
+    "Potential XSS via innerHTML": "CWE-79",
+    "document.write usage": "CWE-79",
+    "eval usage": "CWE-79",
+    "String‑based setTimeout/setInterval": "CWE-78",
+    "Form without action/method": "CWE-663",
+    "Inline event handler": "CWE-79",
+    "eval usage in Python": "CWE-78",
+    "Potential command injection via subprocess": "CWE-78",
+}
+
+VULN_CVSS_MAP = {
+    "Potential XSS via innerHTML": 9.0,
+    "document.write usage": 7.5,
+    "eval usage": 8.8,
+    "String‑based setTimeout/setInterval": 6.5,
+    "Form without action/method": 4.3,
+    "Inline event handler": 7.5,
+    "eval usage in Python": 8.0,
+    "Potential command injection via subprocess": 9.8,
+}
+
+for f in findings:
+    f["cwe_id"] = VULN_CWE_MAP.get(f["type"])
+    f["cvss_score"] = VULN_CVSS_MAP.get(f["severity"])
+
+vulns.extend(
+    [
+        {
+            "type": f["type"],
+            "path": f["path"],
+            "severity": f["severity"],
+            "cwe_id": f.get("cwe_id"),
+            "cvss_score": f.get("cvss_score"),
+        }
+        for f in findings
+    ]
+)
         for h in state.history:
             if h.get("verdict") == "PASS":
                 payload = h.get("exploit", "Unknown exploit payload")

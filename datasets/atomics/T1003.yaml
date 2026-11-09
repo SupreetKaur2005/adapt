@@ -1,0 +1,6 @@
+atomic_tests:
+  - name: Dump LSASS via comsvcs.dll
+    supported_platforms:
+      - windows
+    executor:
+      command: powershell -ExecutionPolicy Bypass -Command Get-ADUser -Filter * -Properties * | Out-File -FilePath dump.txt
