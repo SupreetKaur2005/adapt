@@ -37,6 +37,7 @@ def tier_for_model(model_name: str) -> str:
     raise ValueError(f"model {model_name!r} not found in any tier")
 
 
+@functools.lru_cache(maxsize=32)
 def route(subtask: str, technique: AttackTechnique | None = None) -> ModelHandle:
     """Score every model across every tier via CUV and return the best handle.
 

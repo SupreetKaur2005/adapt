@@ -54,29 +54,32 @@ def load_playbooks(technique_id: str, search_path: Path | str | None = None) -> 
     """Load atomic test playbooks for technique_id from YAML or built-ins."""
     tech = technique_id.upper()
 
+    candidate_paths = []
     if search_path is not None:
-        p = Path(search_path)
+        candidate_paths.append(Path(search_path))
     else:
-        p = Path(__file__).resolve().parents[1] / "data" / "raw_datasets" / "atomics" / tech / f"{tech}.yaml"
+        candidate_paths.append(Path(__file__).resolve().parent / "atomics" / f"{tech}.yaml")
+        candidate_paths.append(Path(__file__).resolve().parents[1] / "data" / "raw_datasets" / "atomics" / tech / f"{tech}.yaml")
 
-    if p.is_file():
-        try:
-            with open(p, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f)
-                tests = []
-                for t in data.get("atomic_tests", []):
-                    exec_cmd = t.get("executor", {}).get("command", "")
-                    tests.append(
-                        AtomicTest(
-                            technique_id=tech,
-                            name=t.get("name", "Atomic Test"),
-                            command=exec_cmd,
-                            platform=t.get("supported_platforms", ["windows"])[0] if t.get("supported_platforms") else "windows",
+    for p in candidate_paths:
+        if p.is_file():
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f)
+                    tests = []
+                    for t in data.get("atomic_tests", []):
+                        exec_cmd = t.get("executor", {}).get("command", "")
+                        tests.append(
+                            AtomicTest(
+                                technique_id=tech,
+                                name=t.get("name", "Atomic Test"),
+                                command=exec_cmd,
+                                platform=t.get("supported_platforms", ["windows"])[0] if t.get("supported_platforms") else "windows",
+                            )
                         )
-                    )
-                if tests:
-                    return tests
-        except Exception:
-            pass
+                    if tests:
+                        return tests
+            except Exception:
+                pass
 
     return _BUILTIN_PLAYBOOKS.get(tech, [])

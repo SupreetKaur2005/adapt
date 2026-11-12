@@ -3,109 +3,586 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.D.A.P.T. Portal</title>
+    <title>A.D.A.P.T. // Minimalist Autonomous Cyber-Range</title>
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div>
-                <h1>A.D.A.P.T. <span>PORTAL</span></h1>
-            </div>
-            <div>
-                <p>Advanced Diagnostics and Autonomous Penetration Testing</p>
-            </div>
-        </header>
+    <!-- Nano-Texture Computational Architecture Canvas -->
+    <div class="nano-canvas-container">
+        <canvas id="nano-substrate"></canvas>
+    </div>
 
-        <div class="card" id="input-section">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('git')">GIT REPOSITORY</button>
-                <button class="tab" onclick="switchTab('zip')">ZIP ARCHIVE</button>
-            </div>
-
-            <div style="margin-top: 1rem; margin-bottom: 1rem; display: flex; justify-content: center; align-items: center;">
-                <label for="n-rounds" style="font-weight: 700; margin-right: 1rem; font-size: 0.9rem;">SIMULATION ROUNDS:</label>
-                <input type="number" id="n-rounds" value="3" min="1" max="20" style="width: 80px; padding: 0.5rem; border: 1px solid var(--border); border-radius: 2px;">
-            </div>
-
-            <div id="tab-git" class="tab-content active">
-                <input type="text" id="git-url" placeholder="https://github.com/your/repo.git">
-                <button class="btn btn-primary" onclick="submitGit()" style="margin-top: 1rem;">ANALYZE REPOSITORY</button>
-            </div>
-
-            <div id="tab-zip" class="tab-content">
-                <div class="file-upload">
-                    <label id="file-label">
-                        CLICK TO SELECT OR DRAG ZIP ARCHIVE HERE
-                    </label>
-                    <input type="file" id="zip-file" accept=".zip" onchange="updateFileLabel(this)">
-                </div>
-                <button class="btn btn-primary" onclick="submitZip()">ANALYZE ARCHIVE</button>
-            </div>
-        </div>
-
-        <div class="card hidden" id="dashboard-section">
-            <h2 style="font-weight:700; letter-spacing: -0.5px; margin-bottom: 1rem;">SIMULATION STATUS: <span id="sim-status" class="status-running">IN PROGRESS</span></h2>
-            
-            <div id="loading-bar-container" class="loading-bar-container hidden">
-                <div id="loading-bar" class="loading-bar"></div>
-            </div>
-
-            <div class="terminal">
-                <div class="terminal-header">
-                    <div class="dot red"></div>
-                    <div class="dot yellow"></div>
-                    <div class="dot green"></div>
-                </div>
-                <div class="terminal-body" id="log-output">
-                </div>
-            </div>
-
-            <div class="results hidden" id="results-section">
-                <h3 style="margin-bottom:1rem; font-weight:700; letter-spacing:-0.5px;">EXECUTIVE SUMMARY</h3>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-value blue-text" id="stat-tested">0</div>
-                        <div class="stat-label">Techniques Tested</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value red-text" id="stat-passed">0</div>
-                        <div class="stat-label">Red Team Breaches</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value green-text" id="stat-blocked">0</div>
-                        <div class="stat-label">Blue Team Blocks</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value" id="stat-cost" style="color: #f39c12;">$0.00</div>
-                        <div class="stat-label">Est. Inference Cost</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 2rem; align-items: stretch; margin-top: 2rem;">
-                    <div style="flex: 1; max-width: 300px;">
-                        <canvas id="resultChart"></canvas>
-                    </div>
-                    <div style="flex: 2;" class="vulns-section">
-                        <h4>Vulnerabilities Identified</h4>
-                        <ul class="vuln-list" id="vuln-list">
-                        </ul>
-                    </div>
+    <div class="app-viewport">
+        <div class="container">
+            <!-- Top System Navigation Bar -->
+            <header class="system-header">
+                <div class="brand-block">
+                    <span class="brand-title">A.D.A.P.T.</span>
+                    <span class="brand-version">SUBSTRATE v0.1.0</span>
+                    <span class="brand-descriptor">Autonomous Cyber-Range Architecture</span>
                 </div>
                 
-                <div style="margin-top: 2rem; display: flex; flex-direction: column; align-items: center;" id="graph-container" class="hidden">
-                    <h4 style="text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">Generated Control Flow Graph (CFG)</h4>
-                    <img id="cfg-graph-img" src="" alt="CFG Graph" style="max-width: 100%; border: 1px solid var(--border); border-radius: 2px;">
+                <div style="display: flex; align-items: center; gap: 2rem;">
+                    <!-- View Switcher Navigation -->
+                    <div class="nav-mode-switcher">
+                        <button class="nav-mode-btn active" id="btn-view-overview" onclick="setAppView('overview')">01 // SPECIFICATION</button>
+                        <button class="nav-mode-btn" id="btn-view-console" onclick="setAppView('console')">02 // RANGE CONSOLE</button>
+                    </div>
+
+                    <div class="telemetry-bar">
+                        <div class="telemetry-node">
+                            <span class="pulse-indicator"></span>
+                            <span>TOPAZ: ACTIVE</span>
+                        </div>
+                        <div class="telemetry-node">
+                            <span style="color: var(--text-muted);">|</span>
+                            <span>ROE K_t: ENFORCED</span>
+                        </div>
+                    </div>
                 </div>
-                
-                <div style="margin-top: 2rem; text-align: right;">
-                    <button class="btn btn-secondary" id="btn-download" onclick="downloadReport()">DOWNLOAD REPORT (PDF)</button>
-                </div>
+            </header>
+
+            <!-- ==========================================
+                 LANDING PAGE / ARCHITECTURAL OVERVIEW
+                 ========================================== -->
+            <div id="landing-section">
+                <!-- Hero Section -->
+                <section class="hero-block">
+                    <div class="hero-tag">EXPERIMENTAL CYBER-RANGE // ZERO CLOUD LEAKAGE</div>
+                    <h1 class="hero-title">Autonomous Adversarial Cyber-Range Governed by Formal Contracts</h1>
+                    <p class="hero-subtitle">
+                        A.D.A.P.T. coordinates Red Team offensive agents and Blue Team defensive remediation systems
+                        within mathematically verified Rules-of-Engagement (K<sub>t</sub>) boundaries. Every action is routed
+                        across local model tiers via the TOPAZ router and recorded to a permanent vector-backed memory registry.
+                    </p>
+                    <div class="hero-cta-group">
+                        <button class="btn-action btn-primary" onclick="setAppView('console')">
+                            <span>INITIALIZE TARGET EVALUATION</span>
+                            <span style="font-family: var(--font-mono);">→</span>
+                        </button>
+                        <button class="btn-action" onclick="scrollToElement('triad-section')">
+                            <span>EXPLORE ARCHITECTURE SPEC</span>
+                            <span style="font-family: var(--font-mono);">↓</span>
+                        </button>
+                    </div>
+
+                    <!-- Technical Metrics Strip -->
+                    <div class="hero-spec-grid">
+                        <div class="hero-spec-cell">
+                            <div class="hero-spec-label">MODEL INFERENCE</div>
+                            <div class="hero-spec-value">100% Local (Ollama)</div>
+                        </div>
+                        <div class="hero-spec-cell">
+                            <div class="hero-spec-label">ROE SAFETY MODEL</div>
+                            <div class="hero-spec-value">K<sub>t</sub> = (I, O<sub>t</sub>, C<sub>t</sub>, V<sub>t</sub>)</div>
+                        </div>
+                        <div class="hero-spec-cell">
+                            <div class="hero-spec-label">DECISION ROUTER</div>
+                            <div class="hero-spec-value">TOPAZ CUV Optimization</div>
+                        </div>
+                        <div class="hero-spec-cell">
+                            <div class="hero-spec-label">EPISODIC MEMORY</div>
+                            <div class="hero-spec-value">CSIM Vector Store (Chroma)</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Adversarial Triad Section -->
+                <section id="triad-section" style="margin-bottom: 3.5rem;">
+                    <div class="section-headline-block">
+                        <h2 class="section-headline">The Adversarial Triad</h2>
+                        <span class="section-tagline">THREE-TIER AGENTIC COORDINATION</span>
+                    </div>
+
+                    <div class="triad-grid">
+                        <!-- Red Team Card -->
+                        <div class="triad-card red">
+                            <div>
+                                <span class="triad-badge">01 // RED TEAM AGENT</span>
+                                <h3 class="triad-title">Autonomous Offensive Infiltration</h3>
+                                <p class="triad-desc">
+                                    Constructs semantic code graphs (AST, CFG, DFG, PDG) from target applications to identify vulnerabilities, generates candidate exploits, and dynamically mutates payloads seeded by Atomic Red Team playbooks upon receiving PIVOT verdicts.
+                                </p>
+                            </div>
+                            <ul class="triad-capabilities">
+                                <li class="triad-capability-item">Program Dependence Graph (PDG) analysis</li>
+                                <li class="triad-capability-item">Atomic Red Team seeded mutations</li>
+                                <li class="triad-capability-item">Kerberos & Web exploit synthesis</li>
+                            </ul>
+                        </div>
+
+                        <!-- Blue Team Card -->
+                        <div class="triad-card blue">
+                            <div>
+                                <span class="triad-badge">02 // BLUE TEAM AGENT</span>
+                                <h3 class="triad-title">Defensive Remediation & Telemetry</h3>
+                                <p class="triad-desc">
+                                    Ingests real-time telemetry from sandbox kernel eBPF probes and Sysmon-for-Linux. Autonomously synthesizes unified code-level remediation diffs to seal breached targets and generates corresponding YARA detection rules.
+                                </p>
+                            </div>
+                            <ul class="triad-capabilities">
+                                <li class="triad-capability-item">Live eBPF socket & process probes</li>
+                                <li class="triad-capability-item">Autonomous unified patch synthesis</li>
+                                <li class="triad-capability-item">Automated YARA rule generation</li>
+                            </ul>
+                        </div>
+
+                        <!-- White Team Card -->
+                        <div class="triad-card white">
+                            <div>
+                                <span class="triad-badge">03 // WHITE TEAM CONTRACT</span>
+                                <h3 class="triad-title">Immutable RoE Governance</h3>
+                                <p class="triad-desc">
+                                    Enforces mathematical Rules-of-Engagement contracts. Type-level enforcement strictly separates immutable constraints (prohibited subnets, max time, absolute bans) from revisable round strategies, logging every violation to an audit trail.
+                                </p>
+                            </div>
+                            <ul class="triad-capabilities">
+                                <li class="triad-capability-item">Type-enforced FrozenConstraints</li>
+                                <li class="triad-capability-item">Single enforcement gate (no bypass)</li>
+                                <li class="triad-capability-item">Triage arbitration: PASS / BLOCK / PIVOT</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Architecture Diagram Section -->
+                <section id="architecture-diagram-section" class="arch-interactive-container">
+                    <div class="panel-header" style="margin-bottom: 1.25rem;">
+                        <h2 class="panel-title">Interactive System Architecture & Operational Data-Flow</h2>
+                        <span class="panel-meta">SELECT OR HOVER ANY COMPONENT TO INSPECT BEHAVIOR</span>
+                    </div>
+
+                    <!-- Step Navigation Chips -->
+                    <div class="diagram-controls">
+                        <div class="diagram-step-bar" id="diagram-chips">
+                            <button class="step-chip active" id="chip-ingest" onclick="selectArchNode('ingest')">01 // INGEST</button>
+                            <button class="step-chip" id="chip-router" onclick="selectArchNode('router')">02 // TOPAZ ROUTER</button>
+                            <button class="step-chip" id="chip-red" onclick="selectArchNode('red')">03 // RED AGENT</button>
+                            <button class="step-chip" id="chip-roe" onclick="selectArchNode('roe')">04 // ROE GATE</button>
+                            <button class="step-chip" id="chip-sandbox" onclick="selectArchNode('sandbox')">05 // SANDBOX</button>
+                            <button class="step-chip" id="chip-telemetry" onclick="selectArchNode('telemetry')">06 // eBPF PROBES</button>
+                            <button class="step-chip" id="chip-blue" onclick="selectArchNode('blue')">07 // BLUE AGENT</button>
+                            <button class="step-chip" id="chip-triage" onclick="selectArchNode('triage')">08 // TRIAGE</button>
+                            <button class="step-chip" id="chip-csim" onclick="selectArchNode('csim')">09 // CSIM MEMORY</button>
+                        </div>
+                        <button class="btn-action" onclick="toggleAutoTrace()" id="btn-autotrace" style="padding: 0.35rem 0.85rem; font-size: 0.72rem;">
+                            <span id="autotrace-text">AUTO-TRACE FLOW</span> ▶
+                        </button>
+                    </div>
+
+                    <!-- SVG Diagram Stage -->
+                    <div class="svg-diagram-wrapper">
+                        <svg class="arch-svg" viewBox="0 0 980 440" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 1 L 8 5 L 0 9 z" fill="rgba(255, 255, 255, 0.25)" />
+                                </marker>
+                                <marker id="arrow-active" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 1 L 8 5 L 0 9 z" fill="#4389E8" />
+                                </marker>
+                            </defs>
+
+                            <!-- Flow Paths -->
+                            <path id="path-1" class="svg-flow-path active" d="M 210 85 L 260 85" marker-end="url(#arrow)" />
+                            <path id="path-2" class="svg-flow-path" d="M 440 85 L 490 85" marker-end="url(#arrow)" />
+                            <path id="path-3" class="svg-flow-path" d="M 670 85 L 720 85" marker-end="url(#arrow)" />
+                            <path id="path-4" class="svg-flow-path" d="M 815 120 L 815 195" marker-end="url(#arrow)" />
+                            <path id="path-5" class="svg-flow-path" d="M 720 230 L 670 230" marker-end="url(#arrow)" />
+                            <path id="path-6" class="svg-flow-path" d="M 490 230 L 440 230" marker-end="url(#arrow)" />
+                            <path id="path-7" class="svg-flow-path" d="M 350 265 L 350 335" marker-end="url(#arrow)" />
+                            <path id="path-8" class="svg-flow-path" d="M 440 370 L 490 370" marker-end="url(#arrow)" />
+                            <path id="path-9" class="svg-flow-path loop" d="M 580 335 C 580 180, 350 170, 350 125" marker-end="url(#arrow)" />
+
+                            <!-- Node 1: Target Ingestion & Code Graphs -->
+                            <g class="svg-node-group active" id="node-ingest" onclick="selectArchNode('ingest')">
+                                <rect class="svg-node-rect" x="30" y="50" width="180" height="70" rx="2" />
+                                <text class="svg-node-tag" x="45" y="70">01 // SOURCE INGEST</text>
+                                <text class="svg-node-title" x="45" y="90">Target Code Analysis</text>
+                                <text class="svg-node-sub" x="45" y="105">AST · CFG · DFG · PDG</text>
+                            </g>
+
+                            <!-- Node 2: TOPAZ Model Router -->
+                            <g class="svg-node-group" id="node-router" onclick="selectArchNode('router')">
+                                <rect class="svg-node-rect" x="260" y="50" width="180" height="70" rx="2" />
+                                <text class="svg-node-tag" x="275" y="70">02 // ROUTING ENGINE</text>
+                                <text class="svg-node-title" x="275" y="90">TOPAZ CUV Router</text>
+                                <text class="svg-node-sub" x="275" y="105">Score Local Model Tiers</text>
+                            </g>
+
+                            <!-- Node 3: Red Team Offensive Agent -->
+                            <g class="svg-node-group red" id="node-red" onclick="selectArchNode('red')">
+                                <rect class="svg-node-rect" x="490" y="50" width="180" height="70" rx="2" />
+                                <text class="svg-node-tag" x="505" y="70">03 // ADVERSARIAL</text>
+                                <text class="svg-node-title" x="505" y="90">Red Team Agent</text>
+                                <text class="svg-node-sub" x="505" y="105">Exploit & Atomic Mutation</text>
+                            </g>
+
+                            <!-- Node 4: RoE Contract Gate -->
+                            <g class="svg-node-group white" id="node-roe" onclick="selectArchNode('roe')">
+                                <rect class="svg-node-rect" x="720" y="50" width="190" height="70" rx="2" />
+                                <text class="svg-node-tag" x="735" y="70">04 // ROE CONTRACT K_t</text>
+                                <text class="svg-node-title" x="735" y="90">Constraint Enforcer</text>
+                                <text class="svg-node-sub" x="735" y="105">Frozen Subnets & Audit</text>
+                            </g>
+
+                            <!-- Node 5: Sandbox Target -->
+                            <g class="svg-node-group" id="node-sandbox" onclick="selectArchNode('sandbox')">
+                                <rect class="svg-node-rect" x="720" y="195" width="190" height="70" rx="2" />
+                                <text class="svg-node-tag" x="735" y="215">05 // TARGET ENVIRONMENT</text>
+                                <text class="svg-node-title" x="735" y="235">Sealed Target Lab</text>
+                                <text class="svg-node-sub" x="735" y="250">AD Domain + Web Apps</text>
+                            </g>
+
+                            <!-- Node 6: eBPF Telemetry Probes -->
+                            <g class="svg-node-group blue" id="node-telemetry" onclick="selectArchNode('telemetry')">
+                                <rect class="svg-node-rect" x="490" y="195" width="180" height="70" rx="2" />
+                                <text class="svg-node-tag" x="505" y="215">06 // OBSERVABILITY</text>
+                                <text class="svg-node-title" x="505" y="235">Kernel eBPF Probes</text>
+                                <text class="svg-node-sub" x="505" y="250">Sysmon & Sockets Stream</text>
+                            </g>
+
+                            <!-- Node 7: Blue Team Defensive Agent -->
+                            <g class="svg-node-group blue" id="node-blue" onclick="selectArchNode('blue')">
+                                <rect class="svg-node-rect" x="260" y="195" width="180" height="70" rx="2" />
+                                <text class="svg-node-tag" x="275" y="215">07 // DEFENSIVE REMEDIATION</text>
+                                <text class="svg-node-title" x="275" y="235">Blue Team Agent</text>
+                                <text class="svg-node-sub" x="275" y="250">Patch Synthesis & YARA</text>
+                            </g>
+
+                            <!-- Node 8: Triage Gateway -->
+                            <g class="svg-node-group white" id="node-triage" onclick="selectArchNode('triage')">
+                                <rect class="svg-node-rect" x="260" y="335" width="180" height="70" rx="2" />
+                                <text class="svg-node-tag" x="275" y="355">08 // ARBITRATION</text>
+                                <text class="svg-node-title" x="275" y="375">Triage Gateway</text>
+                                <text class="svg-node-sub" x="275" y="390">Verdict: PASS/BLOCK/PIVOT</text>
+                            </g>
+
+                            <!-- Node 9: CSIM Memory Registry -->
+                            <g class="svg-node-group" id="node-csim" onclick="selectArchNode('csim')">
+                                <rect class="svg-node-rect" x="490" y="335" width="180" height="70" rx="2" />
+                                <text class="svg-node-tag" x="505" y="355">09 // EPISODIC MEMORY</text>
+                                <text class="svg-node-title" x="505" y="375">CSIM Vaccine Store</text>
+                                <text class="svg-node-sub" x="505" y="390">Vector Memory (Chroma)</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Interactive Inspector Detail Box -->
+                    <div class="inspector-card" id="inspector-display">
+                        <div class="inspector-header">
+                            <h3 class="inspector-title" id="inspector-title">01 // Target Code Analysis (AST / CFG / DFG / PDG)</h3>
+                            <span class="inspector-chip" id="inspector-phase">SUBSYSTEM 01 // STATIC & SEMANTIC ANALYSIS</span>
+                        </div>
+                        <p class="inspector-desc" id="inspector-desc">
+                            Aggregates source code from the target repository or uploaded archive. Analyzes program semantics by building four interconnected graph representations: Abstract Syntax Tree (AST), Control Flow Graph (CFG), Data Flow Graph (DFG), and Program Dependence Graph (PDG) to isolate exact control paths and data flow vulnerabilities.
+                        </p>
+                        <div class="inspector-specs-grid">
+                            <div>
+                                <div class="spec-cell-label">Primary Inputs</div>
+                                <div class="spec-cell-val" id="inspector-inputs">Raw Python source files, Git repository, or ZIP archive</div>
+                            </div>
+                            <div>
+                                <div class="spec-cell-label">Primary Outputs & Artifacts</div>
+                                <div class="spec-cell-val" id="inspector-outputs">Graph Bundle { AST, CFG, DFG, PDG, SourceCode }</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Core Technical Pillars -->
+                <section style="margin-bottom: 4rem;">
+                    <div class="section-headline-block">
+                        <h2 class="section-headline">Architectural Foundations</h2>
+                        <span class="section-tagline">SCIENTIFIC INNOVATIONS & METRICS</span>
+                    </div>
+
+                    <div class="quad-grid">
+                        <!-- Pillar 1: TOPAZ -->
+                        <div class="quad-card">
+                            <div class="quad-num">PILLAR 01 // INTELLIGENT ROUTING</div>
+                            <h3 class="quad-title">TOPAZ Cost-Utility-Value Router</h3>
+                            <p class="quad-text">
+                                Prevents over-spending frontier compute on routine scanning. TOPAZ evaluates candidate local models (lightweight, mid, heavy) and scores them against task estimates using the CUV objective function:
+                            </p>
+                            <div class="formula-box">
+                                CUV = (P(success) × Stealth) / (Cost_per_token × Execution_Time)
+                            </div>
+                        </div>
+
+                        <!-- Pillar 2: CSIM Store -->
+                        <div class="quad-card">
+                            <div class="quad-num">PILLAR 02 // EPISODIC MEMORY</div>
+                            <h3 class="quad-title">CSIM "Vaccine Registry"</h3>
+                            <p class="quad-text">
+                                Successful exploits and verified remediation patches from PASS verdicts are embedded and committed into a local vector registry. Subsequent rounds utilize cosine similarity lookups to warm-start task estimators and accelerate remediation.
+                            </p>
+                            <div class="formula-box">
+                                Similarity Threshold = 0.2 // Fully Local Embedding Vectors
+                            </div>
+                        </div>
+
+                        <!-- Pillar 3: Graph Representations -->
+                        <div class="quad-card">
+                            <div class="quad-num">PILLAR 03 // PROGRAM ANALYSIS</div>
+                            <h3 class="quad-title">Multi-Graph Code Representations</h3>
+                            <p class="quad-text">
+                                Target code is analyzed using Tree-Sitter and NetworkX to produce Abstract Syntax Trees (AST), Control Flow Graphs (CFG), Data Flow Graphs (DFG), and combined Program Dependence Graphs (PDG) for exact vulnerability localization.
+                            </p>
+                            <div class="formula-box">
+                                Graph Bundle = { AST, CFG, DFG, PDG, SourceCode }
+                            </div>
+                        </div>
+
+                        <!-- Pillar 4: Sealed Sandbox -->
+                        <div class="quad-card">
+                            <div class="quad-num">PILLAR 04 // ENVIRONMENT ISOLATION</div>
+                            <h3 class="quad-title">Sealed Network Fabric & Telemetry</h3>
+                            <p class="quad-text">
+                                Sandboxed targets run within Mininet network fabrics and isolated network namespaces with iptables forward-drop enforcement. Dedicated telemetry containers stream eBPF socket lifecycle events without leaking packets to the host.
+                            </p>
+                            <div class="formula-box">
+                                Network Isolation: iptables -I FORWARD -s [ns] -j DROP
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; padding: 2rem 0;">
+                        <button class="btn-action btn-primary" onclick="setAppView('console')" style="padding: 1rem 2.5rem;">
+                            <span>PROCEED TO CYBER-RANGE CONSOLE</span>
+                            <span style="font-family: var(--font-mono);">→</span>
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ==========================================
+                 RANGE CONSOLE (TARGET INGESTION & RUN)
+                 ========================================== -->
+            <div id="console-section" class="hidden">
+                <!-- Target Ingestion Console (Input Section) -->
+                <section class="surface-panel" id="input-section">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Target Substrate Ingestion</h2>
+                        <span class="panel-meta">LOCAL OLLAMA INFERENCE // ZERO CLOUD LEAKAGE</span>
+                    </div>
+
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" onclick="switchTab('git')">GIT REPOSITORY</button>
+                        <button class="tab-btn" onclick="switchTab('zip')">ZIP ARCHIVE</button>
+                    </div>
+
+                    <!-- Git Repository Ingestion -->
+                    <div id="tab-git" class="tab-pane active">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="git-url">Remote Repository URI</label>
+                                <input type="text" id="git-url" class="input-field" placeholder="https://github.com/organization/target-repo.git">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="n-rounds-git">Episode Rounds</label>
+                                <input type="number" id="n-rounds-git" class="input-field" value="3" min="1" max="20" oninput="updateTimeEstimate(this.value)">
+                                <span class="form-time-estimate" id="time-est-git">EST. RUNTIME: <strong>~30–45s</strong> (10-15s/round)</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn-action btn-primary" onclick="submitGit()">
+                                <span>INITIALIZE ADVERSARIAL EPISODE</span>
+                                <span style="font-family: var(--font-mono); font-size: 0.9em;">→</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Zip Archive Ingestion -->
+                    <div id="tab-zip" class="tab-pane">
+                        <div class="upload-aperture" onclick="document.getElementById('zip-file').click()">
+                            <input type="file" id="zip-file" accept=".zip" onchange="updateFileLabel(this)">
+                            <div class="upload-label" id="file-label">
+                                <span>CLICK TO SELECT OR DEPOSIT TARGET ARCHIVE (.ZIP)</span>
+                                <span class="sub-text">[MAX SIZE: 100MB // AUTOMATIC PYTHON RECONNAISSANCE]</span>
+                            </div>
+                        </div>
+                        <div class="form-grid" style="margin-top: 1.25rem;">
+                            <div class="form-group">
+                                <label class="form-label">Substrate Configuration</label>
+                                <div class="input-field" style="color: var(--text-muted); cursor: not-allowed;">AUTOMATIC SANDBOX ISOLATION ENABLED</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="n-rounds-zip">Episode Rounds</label>
+                                <input type="number" id="n-rounds-zip" class="input-field" value="3" min="1" max="20" oninput="updateTimeEstimate(this.value)">
+                                <span class="form-time-estimate" id="time-est-zip">EST. RUNTIME: <strong>~30–45s</strong> (10-15s/round)</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn-action btn-primary" onclick="submitZip()">
+                                <span>INITIALIZE ADVERSARIAL EPISODE</span>
+                                <span style="font-family: var(--font-mono); font-size: 0.9em;">→</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Operational Dashboard Console (Live Execution & Results) -->
+                <section class="surface-panel hidden" id="dashboard-section">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Orchestration Telemetry</h2>
+                        <div style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div class="telemetry-node" id="telemetry-stopwatch" style="font-size: 0.72rem;">
+                                <span style="color: var(--text-muted);">ELAPSED:</span>
+                                <span id="elapsed-timer" style="color: var(--text-primary); font-weight: 600;">00:00</span>
+                                <span style="color: var(--text-muted); margin-left: 0.5rem;">EST. TOTAL:</span>
+                                <span id="est-total-time" style="color: var(--team-white);">~45s</span>
+                            </div>
+                            <span class="badge" id="sim-status-badge">INITIALIZING</span>
+                        </div>
+                    </div>
+
+                    <!-- Hairline Progress Sweep -->
+                    <div id="loading-bar-container" class="hairline-progress-container hidden">
+                        <div class="hairline-progress-bar"></div>
+                    </div>
+
+                    <!-- Executive Metrics Array -->
+                    <div class="metrics-array">
+                        <div class="metric-cell">
+                            <div class="metric-header">
+                                <span class="metric-tag">TECHNIQUES TESTED</span>
+                                <div class="metric-indicator" style="background: var(--text-muted);"></div>
+                            </div>
+                            <div class="metric-value" id="stat-tested">0</div>
+                            <div class="metric-sub">MITRE ATT&CK S_cyber</div>
+                        </div>
+                        <div class="metric-cell accent-red">
+                            <div class="metric-header">
+                                <span class="metric-tag">RED TEAM BREACHES</span>
+                                <div class="metric-indicator"></div>
+                            </div>
+                            <div class="metric-value" id="stat-passed">0</div>
+                            <div class="metric-sub">Adversarial Infiltrations</div>
+                        </div>
+                        <div class="metric-cell accent-green">
+                            <div class="metric-header">
+                                <span class="metric-tag">BLUE TEAM REMEDIATIONS</span>
+                                <div class="metric-indicator"></div>
+                            </div>
+                            <div class="metric-value" id="stat-blocked">0</div>
+                            <div class="metric-sub">Synthesized & Applied</div>
+                        </div>
+                        <div class="metric-cell">
+                            <div class="metric-header">
+                                <span class="metric-tag">EXECUTION DURATION</span>
+                                <div class="metric-indicator" style="background: var(--status-success);"></div>
+                            </div>
+                            <div class="metric-value" id="stat-time">0.0s</div>
+                            <div class="metric-sub" id="stat-time-sub">Elapsed Runtime</div>
+                        </div>
+                        <div class="metric-cell">
+                            <div class="metric-header">
+                                <span class="metric-tag">INFERENCE EXPENDITURE</span>
+                                <div class="metric-indicator" style="background: var(--team-white);"></div>
+                            </div>
+                            <div class="metric-value" id="stat-cost">$0.000</div>
+                            <div class="metric-sub">TOPAZ Routed Compute</div>
+                        </div>
+                    </div>
+
+                    <!-- Operational Dual Workspace -->
+                    <div class="operational-columns">
+                        <!-- Streamed System Telemetry -->
+                        <div class="terminal-instrument">
+                            <div class="terminal-topbar">
+                                <span>SYS_TELEMETRY // STREAM</span>
+                                <span id="log-count">0 EVENTS</span>
+                            </div>
+                            <div class="terminal-scroll" id="log-output">
+                                <!-- Stream lines inserted via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Target Topology Visualization -->
+                        <div class="viz-panel">
+                            <div class="viz-header">
+                                <span>PROGRAM TOPOLOGY // ANALYSIS GRAPH</span>
+                                <span id="viz-meta">CFG RENDER</span>
+                            </div>
+                            <div class="viz-body">
+                                <img id="cfg-graph-img" class="viz-img hidden" alt="Control Flow Graph">
+                                <div id="chart-container" class="chart-wrapper">
+                                    <canvas id="resultChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vulnerability Ledger -->
+                    <div id="vuln-section" class="hidden">
+                        <div class="panel-header" style="margin-top: 1rem;">
+                            <h3 class="panel-title" style="font-size: 1rem;">Vulnerability & Exploit Inventory</h3>
+                            <span class="panel-meta" id="vuln-count-tag">0 VULNERABILITIES IDENTIFIED</span>
+                        </div>
+                        <div class="data-table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Technique / Flaw</th>
+                                        <th>Substrate Path</th>
+                                        <th>CWE ID</th>
+                                        <th>CVSS</th>
+                                        <th>Classification</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vuln-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Defensive Remediations / Patches -->
+                    <div id="remediation-section" class="hidden">
+                        <div class="panel-header" style="margin-top: 1.5rem;">
+                            <h3 class="panel-title" style="font-size: 1rem;">Synthesized Remediations</h3>
+                            <span class="panel-meta">BLUE TEAM AUTONOMOUS DIFF SYNTHESIS</span>
+                        </div>
+                        <div id="remediation-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Chronological Round Arbitration -->
+                    <div id="round-history-section" class="hidden">
+                        <div class="panel-header" style="margin-top: 1.5rem;">
+                            <h3 class="panel-title" style="font-size: 1rem;">Round-by-Round Arbitration Trace</h3>
+                            <span class="panel-meta">RULES OF ENGAGEMENT VERIFICATION</span>
+                        </div>
+                        <div class="data-table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Round</th>
+                                        <th>Red Vector</th>
+                                        <th>Blue Countermeasure</th>
+                                        <th>Triage Verdict</th>
+                                        <th>Arbitration Rationale</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="round-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Footer Actions -->
+                    <div class="panel-footer-actions">
+                        <button class="btn-action" onclick="resetUI()">INITIALIZE NEW EVALUATION</button>
+                        <button class="btn-action btn-primary" id="btn-download" onclick="downloadReport()">EXPORT AUDIT REPORT (.MD)</button>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    
-    <script src="/static/app.js?v=4"></script>
+
+    <script src="/static/app.js?v=6"></script>
 </body>
 </html>

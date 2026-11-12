@@ -24,12 +24,21 @@ DEFAULT_COLD_START: tuple[float, float] = (0.3, 0.5)
 # stealth per record yet -- revisit once it does).
 _WARM_STEALTH_DEFAULT = 0.6
 
+# Cache for estimate results: (subtask, technique_id) -> (success_rate, stealth_multiplier)
+_estimate_cache: dict[tuple[str, str], tuple[float, float]] = {}
+
 
 def estimate(subtask: str, technique: AttackTechnique) -> tuple[float, float]:
     """Return (success_rate, stealth_multiplier) -- warm if CSIM history exists,
     else cold-start from `COLD_START_TABLE`.
+    
+    Caches results to avoid redundant CSIM queries.
     """
     from adapt.memory.csim_store import query_similar
+
+    cache_key = (subtask, technique.technique_id)
+    if cache_key in _estimate_cache:
+        return _estimate_cache[cache_key]
 
     try:
         records = query_similar(subtask)
@@ -39,6 +48,9 @@ def estimate(subtask: str, technique: AttackTechnique) -> tuple[float, float]:
     if records:
         pass_count = sum(1 for r in records if r.outcome == "PASS")
         success_rate = pass_count / len(records)
-        return success_rate, _WARM_STEALTH_DEFAULT
+        result = (success_rate, _WARM_STEALTH_DEFAULT)
+    else:
+        result = COLD_START_TABLE.get(technique.tactic, DEFAULT_COLD_START)
 
-    return COLD_START_TABLE.get(technique.tactic, DEFAULT_COLD_START)
+    _estimate_cache[cache_key] = result
+    return result

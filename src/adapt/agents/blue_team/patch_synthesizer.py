@@ -86,6 +86,9 @@ def _parse_patch_response(response: str) -> tuple[str, str, str]:
 
     if "```diff" in response:
         diff = response.split("```diff", 1)[1].split("```", 1)[0].strip()
+    # If we extracted a diff, keep it; otherwise, fall back to the raw response.
+    if not diff:
+        diff = response.strip()
     elif "```" in response:
         code_block = response.split("```", 1)[1].split("```", 1)[0].strip()
         if "---" in code_block or "+++" in code_block or "@@" in code_block:
@@ -93,4 +96,7 @@ def _parse_patch_response(response: str) -> tuple[str, str, str]:
     elif "---" in response and "+++" in response:
         diff = response.strip()
 
+    # If no diff extracted, use the entire response as the diff (fallback for malformed inputs)
+    if not diff:
+        diff = response.strip()
     return file_path, diff, description

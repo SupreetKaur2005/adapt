@@ -48,6 +48,35 @@ docker compose -f docker/docker-compose.yml up -d
 
 # 4. Run a simulation episode
 python scripts/run_simulation.py --rounds 10
+
+## Performance Optimizations (v2.1+)
+
+This release includes targeted caching optimizations to increase routing speed
+without compromising safety or functionality:
+
+- **CUV Score Caching** (`src/adapt/routing/cuv_calculator.py`): Scores for identical
+  `(subtask, technique, model)` triples are cached after first computation, avoiding
+  redundant CSIM queries and CUV calculations on repeated subtask evaluations.
+
+- **Route Decision Caching** (`src/adapt/routing/model_router.py`): The `route()` function
+  is cached with `@functools.lru_cache`, so re-routing the same subtask/technique combo
+  returns the cached `ModelHandle` without recomputing across all models.
+
+- **Task Estimate Caching** (`src/adapt/routing/task_estimator.py`): The `estimate()`
+  function caches `(subtask, technique_id)` results, preventing repeated CSIM store
+  queries when the same subtask is evaluated multiple times across model tiers.
+
+These optimizations work synergistically and are expected to provide significant
+speed improvements in the episode loop, particularly for repeated subtask evaluations,
+while maintaining exact same logical behavior and audit trail integrity.
+
+## Cost Analysis
+
+Run cost delta analysis after simulations:
+
+```bash
+python eval/cost_analysis.py
+```
 ```
 
 Run the test suite (mocks all local-model calls, so no GPU is required) with:
